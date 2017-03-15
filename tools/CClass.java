@@ -1,6 +1,7 @@
 package tools;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -8,15 +9,15 @@ import java.util.List;
  */
 public class CClass {
   //FIXED - class ATTRIBUTE added!!!
-    private List<Attribute> classAtributes;
+    private List<Attribute> classAttributes;
     private HashMap<String, String> classMethods; //name, source code
     private List<Method> methods;
     private String parentClassName;
     private List<String> classesUsed;
-    private List<Stirng> childrenClasses;
+    private List<String> childrenClasses;
     private String className;
     private List<Attribute> publicAttribute = null;
-    private List<Methods> publicMethods = null;
+    private List<Method> publicMethods = null;
 
     public void setClassName(String name) {
       this.className = name;
@@ -43,14 +44,14 @@ public class CClass {
     }
 
 
-    public List<Attribute> getClassAtributes() {
-        return classAtributes;
+    public List<Attribute> getClassAttributes() {
+        return classAttributes;
     }
 
     public List<Attribute> getPublicClassAtributes() {
       if (publicAttribute == null) {
         publicAttribute = new LinkedList<>();
-        for (Attribute a : this.classAtributes) {
+        for (Attribute a : this.classAttributes) {
           if (a.getAcessSpec() == Keywords.PUBLIC) {
             publicAttribute.add(a);
           }
@@ -59,20 +60,20 @@ public class CClass {
       return publicAttribute;
     }
 
-    public List<Attribute> getPublicClassMethods() {
+    public List<Method> getPublicClassMethods() {
       if (publicMethods == null) {
         publicMethods = new LinkedList<>();
-        for (Methods m : this.classMethods) {
-          if (a.getAcessSpec() == Keywords.PUBLIC) {
-            publicMethods.add(a);
+        for (Method m : this.methods) {
+          if (m.getAcessSpec() == Keywords.PUBLIC) {
+            publicMethods.add(m);
           }
         }
       }
       return publicMethods;
     }
 
-    public void setClassAtributes(List<Attribute> classAtributes) {
-        this.classAtributes = classAtributes;
+    public void setClassAttributes(List<Attribute> classAttributes) {
+        this.classAttributes = classAttributes;
     }
 
     public List<Method> getMethods() {
@@ -83,7 +84,8 @@ public class CClass {
     }
 
     public void setClassMethods(HashMap<String, String> classMethods) {
-        this.classMethods = classMethods;
+      this.classMethods = classMethods;
+      getMethods();
     }
 
     public String getParentClassName() {

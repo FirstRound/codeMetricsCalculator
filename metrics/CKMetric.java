@@ -6,6 +6,7 @@ import tools.CClass;
 import tools.Method;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,15 +15,15 @@ import java.util.Set;
  */
 public class CKMetric implements IMetric {
     HashMap<String, CClass> classes;
-    String className;
+    CClass cclass;
 
     //A method count for a class
-    int weightedMethodPerClass(){
-        return classes.get(className).getMethods().size();
+    private int weightedMethodPerClass(){
+        return cclass.getMethods().size();
     }
 
     //A maximum inheritance path from the given class to its root class
-    int depthOfInheritanceTree(String className){
+    private int depthOfInheritanceTree(String className){
         String parent = classes.get(className).getParentClassName();
         if(parent.isEmpty())
             return 0;
@@ -31,7 +32,7 @@ public class CKMetric implements IMetric {
     }
 
     //A number of immediate sub-classes of a class
-    int numberOfChildren(){
+    private int numberOfChildren(){
         int numChildren = 0;
         Set<CClass> c = (Set<CClass>) classes.values();
         for(CClass className : c){
@@ -46,8 +47,8 @@ public class CKMetric implements IMetric {
     // are coupled when the methods declared in one class use the methods
     // or instance variables defined by the other class.
     */
-    int couplingBetwwenObjectClasses(){
-        return classes.get(className).getClassesUsed().size();
+    private int couplingBetwwenObjectClasses(){
+        return cclass.getClassesUsed().size();
     }
 
     /*
@@ -55,13 +56,17 @@ public class CKMetric implements IMetric {
     // be executed in response to a message received by an object of that
     // class.
     */
-    int responceOfClass(){
-        List<Method> methods = classes.get(className).getMethods();
-        int count = methods.size();
+    private List<String> responceOfClass(){
+        List<String> responce = new LinkedList<>();
+        List<Method> methods = cclass.getMethods();
         for(Method method : methods){
-            count += method.getMethodsUsed().size();
+            if(!responce.contains(method.getName()))
+                responce.add(method.getName());
+            for(String m : method.getMethodsUsed()){
+                if(!responce.contains(m)) responce.add(m);
+            }
         }
-        return count;
+        return responce;
     }
 
     /*
@@ -69,14 +74,42 @@ public class CKMetric implements IMetric {
     // field in common minus the number of pairs of methods in the class that
     // do share at least one field.
      */
-    int lackOfCohessionMethods(){
-        return 0;
+    private int lackOfCohessionMethods(){
+        int shareField = 0;
+        int dontShareFild = 0;
+        List<Method> m1 = cclass.getMethods();
+        for(int i = 0; i < m1.size(); i++){
+            for(int j = i+1; j < m1.size(); j++){
+                if(haveSameAttributes(m1.get(i), m1.get(j)))
+                    shareField++;
+                else dontShareFild++;
+            }
+        }
+        return dontShareFild - shareField;
+    }
+
+    private boolean haveSameAttributes(Method method1, Method method2) {
+        List<String> m1Global = method1.getGlobalFields();
+        List<String> m2Global = method2.getGlobalFields();
+        for(String field : m2Global){
+            if(m1Global.contains(field)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public IMetricResult calculateMetric(String className, HashMap<String, CClass> classes) {
         this.classes = classes;
-        this.className = className;
+        this.cclass = classes.get(className);
+        int weighted = weightedMethodPerClass();
+        int depth = depthOfInheritanceTree(className);
+        int numChildren = numberOfChildren();
+        int coupling = couplingBetwwenObjectClasses();
+        List<String> responce = responceOfClass();
+        int cohession = lackOfCohessionMethods();
+        //TODO: Result
         return null;
     }
 }

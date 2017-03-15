@@ -23,11 +23,11 @@ public class Method {
     }
 
     public String getAcessSpec() {
-      return this.accessSpec;
+      return this.asseccSpec;
     }
 
     public void setAcessSpec(String accessSpec) {
-      this.accessSpec = accessSpec;
+      this.asseccSpec = accessSpec;
     }
 
     public List<String> getGlobalFields() {
