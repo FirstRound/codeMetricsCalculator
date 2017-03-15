@@ -7,11 +7,32 @@ import java.util.List;
  * Created by Мария on 13.03.2017.
  */
 public class CClass {
-    private List<String> classAtributes;
+  //FIXED - class ATTRIBUTE added!!!
+    private List<Attribute> classAtributes;
     private HashMap<String, String> classMethods; //name, source code
     private List<Method> methods;
     private String parentClassName;
     private List<String> classesUsed;
+    private List<Stirng> childrenClasses;
+    private String className;
+    private List<Attribute> publicAttribute = null;
+    private List<Methods> publicMethods = null;
+
+    public void setClassName(String name) {
+      this.className = name;
+    }
+
+    public String getClassName() {
+      return this.className;
+    }
+
+    public void setChildrenClasses(List<String> children) {
+      this.childrenClasses = children;
+    }
+
+    public List<String> getChildrenClasses() {
+      return this.childrenClasses;
+    }
 
     public List<String> getClassesUsed() {
         return classesUsed;
@@ -22,11 +43,35 @@ public class CClass {
     }
 
 
-    public List<String> getClassAtributes() {
+    public List<Attribute> getClassAtributes() {
         return classAtributes;
     }
 
-    public void setClassAtributes(List<String> classAtributes) {
+    public List<Attribute> getPublicClassAtributes() {
+      if (publicAttribute == null) {
+        publicAttribute = new LinkedList<>();
+        for (Attribute a : this.classAtributes) {
+          if (a.getAcessSpec() == Keywords.PUBLIC) {
+            publicAttribute.add(a);
+          }
+        }
+      }
+      return publicAttribute;
+    }
+
+    public List<Attribute> getPublicClassMethods() {
+      if (publicMethods == null) {
+        publicMethods = new LinkedList<>();
+        for (Methods m : this.classMethods) {
+          if (a.getAcessSpec() == Keywords.PUBLIC) {
+            publicMethods.add(a);
+          }
+        }
+      }
+      return publicMethods;
+    }
+
+    public void setClassAtributes(List<Attribute> classAtributes) {
         this.classAtributes = classAtributes;
     }
 

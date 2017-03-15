@@ -11,6 +11,24 @@ public class Method {
     private List<String> globalFields;
     private String sourse;
     private List<String> methodsUsed;
+    private String asseccSpec;
+    private String name;
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public String getAcessSpec() {
+      return this.accessSpec;
+    }
+
+    public void setAcessSpec(String accessSpec) {
+      this.accessSpec = accessSpec;
+    }
 
     public List<String> getGlobalFields() {
         return globalFields;
